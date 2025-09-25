@@ -8,6 +8,7 @@ Proyek ini bertujuan untuk menganalisis pengaruh empat komponen Indeks Pembangun
 ---
 
 ### **Latar Belakang**
+
 Dalam konteks pembangunan suatu wilayah, terdapat dua indikator utama yang sering menjadi sorotan: Produk Domestik Regional Bruto (PDRB) sebagai cerminan pertumbuhan ekonomi, dan Indeks Pembangunan Manusia (IPM) yang mengukur kemajuan dari aspek kualitas hidup. Meskipun PDRB menunjukkan seberapa besar output ekonomi suatu daerah, IPM menawarkan gambaran yang lebih holistik dengan mengukur kesehatan, pendidikan, dan standar hidup masyarakat. Keterkaitan antara keduanya menjadi esensial, di mana pertumbuhan ekonomi yang tinggi idealnya harus sejalan dengan peningkatan kualitas pembangunan manusia.
 
 Studi ini bertujuan untuk mengeksplorasi secara lebih mendalam apakah terdapat hubungan positif dan saling memengaruhi antara IPM dan PDRB, khususnya dalam konteks provinsi di Indonesia. Pertumbuhan ekonomi yang berkelanjutan tidak hanya diukur dari angka, tetapi juga dari peningkatan kualitas hidup penduduk. Oleh karena itu, analisis ini sangat relevan untuk memahami seberapa efektif IPM sebagai pendorong pertumbuhan ekonomi, serta sebaliknya.
@@ -16,6 +17,20 @@ Studi ini bertujuan untuk mengeksplorasi secara lebih mendalam apakah terdapat h
 1.  Mengetahui statistik deskriptif dari empat komponen IPM dan laju pertumbuhan ekonomi (PDRB).
 2.  Menganalisis hubungan dan pengaruh antara IPM dan laju pertumbuhan ekonomi (PDRB).
 3.  Mengidentifikasi tren dan pola pengaruh antarvariabel dari tahun 2019-2024.
+
+### **Data & Variabel**
+<div align="center">
+  <img src="assets/images/bps.png" width="150" align="center">
+</div>
+
+##### *Variabel Prediktor (X)*
+* Umur Harapan Hidup (UHH)
+* Harapan Lama Sekolah (HLS)
+* Rata-Rata Lama Sekolah (RLS)
+* Pengeluaran Per Kapita Disesuaikan
+
+##### *Variabel Target (Y)*
+* Laju Pertumbuhan Produk Domestik Regional Bruto Atas Dasar Harga Konstan (persen)
 
 ### **Metodologi**
 Proyek ini menggunakan dua pendekatan utama:
