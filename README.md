@@ -153,13 +153,48 @@ print(round(cor_matrix, 2))
 
 Pada tahap ini, hubungan antarvariabel utama dianalisis melalui matriks korelasi sehingga pola keterkaitan antarindikator dapat diidentifikasi. Hasilnya: 
 
-* PDRB_Growth: Variabel ini memiliki korelasi yang sangat lemah (hampir nol) dengan semua variabel lainnya. Nilai korelasinya berkisar antara -0.08 hingga 0.11.
-* Variabel Lain: Terdapat korelasi positif yang cukup kuat (moderat) di antara variabel RLS, UHH, dan Pengeluaran. (Pengeluaran vs UHH = 0.61, Pengeluaran vs RLS = 0.59, RLS vs UHH = 0.42, RLS VS HLS = 0.49)
+* PDRB_Growth: Variabel Y ini memiliki korelasi yang sangat lemah (hampir nol) dengan semua variabel lainnya. Nilai korelasinya berkisar antara -0.08 hingga 0.11.
+* Variabel Lain: Terdapat korelasi positif yang cukup kuat (moderat) di antara variabel X: RLS, UHH, dan Pengeluaran. (*Pengeluaran vs UHH = 0.61, Pengeluaran vs RLS = 0.59, RLS vs UHH = 0.42, RLS VS HLS = 0.49*)
 * Daya Prediksi Rendah: Korelasi yang sangat lemah antara variabel X dan Y (PDRB_Growth) menunjukkan bahwa variabel-variabel tersebut bukan prediktor linear yang baik. Model regresi linear yang dihasilkan kemungkinan besar tidak akan signifikan atau memiliki $R^2$ yang sangat rendah.
 * Potensi Multikolinearitas: Adanya korelasi yang cukup kuat di antara variabel-variabel independen (misalnya UHH dan Pengeluaran = 0.61) mengindikasikan adanya potensi masalah multikolinearitas. Ini dapat membuat koefisien regresi tidak stabil dan sulit untuk diinterpretasikan.
 
+*Visualisasi Tren PDRB Top 10 Provinsi*
 
 
+```{r}
+top10 <- df %>%
+  group_by(Provinsi) %>%
+  summarise(mean_growth = mean(PDRB_Growth, na.rm = TRUE)) %>%
+  arrange(desc(mean_growth)) %>%
+  slice(1:10) %>%
+  pull(Provinsi)
+
+df_mod <- df %>%
+  mutate(Provinsi_mod = ifelse(Provinsi %in% top10, Provinsi, "Lainnya"))
+
+df_avg <- df_mod %>%
+  filter(Provinsi_mod == "Lainnya") %>%
+  group_by(Tahun, Provinsi_mod) %>%
+  summarise(PDRB_Growth = mean(PDRB_Growth, na.rm = TRUE), .groups = "drop")
+
+df_final <- df_mod %>%
+  filter(Provinsi_mod != "Lainnya") %>%
+  select(Tahun, Provinsi_mod, PDRB_Growth) %>%
+  bind_rows(df_avg)
+
+ggplot(df_final, aes(x = Tahun, y = PDRB_Growth, colour = Provinsi_mod)) +
+  geom_line(size = 1.2) +  # garis agak tebal
+  ggtitle("Grafik Tren PDRB Growth per Provinsi (2019-2024)") +
+  theme_minimal() +
+  theme(legend.title = element_blank(),
+        legend.position = "right")
+```
+
+<p align="center">
+  <img src="assets/images/1.3 Visualisasi Tren PDRB Top 10 Provinsi.png" width="600" height="450">
+</p>
+
+Pada tahap ini, tren pertumbuhan PDRB divisualisasikan dengan menampilkan sepuluh provinsi teratas secara individual, sedangkan provinsi lainnya digabungkan ke dalam satu garis rata-rata untuk menjaga keterbacaan grafik.
 
 
 
