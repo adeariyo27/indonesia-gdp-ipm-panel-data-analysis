@@ -1,6 +1,5 @@
 ![](assets/images/banner.png)
 
----
 
 ### 📘 **Pendahuluan**
 
@@ -72,6 +71,7 @@ library(lmtest)
 library(car)
 library(RColorBrewer)
 ```
+
 Pertama, dilakukan inisialisasi lingkungan kerja agar semua fungsi siap digunakan dengan cara memuat pustaka utama yang dibutuhkan untuk analisis statistik, regresi panel, visualisasi, serta pembersihan data atau biasa disebut tahap.
 
 *Pembersihan & Transformasi Data*
@@ -100,7 +100,7 @@ read_and_clean_col <- function(filepath) {
 data_wide_cleaned <- map(file_list, read_and_clean_col) %>%
   reduce(left_join, by = "Wilayah")
 
-print("--- Data Wide (Setelah Digabung & Kolom Distandardisasi) ---")
+print("--- Data Wide ---")
 glimpse(data_wide_cleaned)
 view(data_wide_cleaned)
 write_csv(data_wide_cleaned, "data_wide_cleaned.csv")
@@ -120,13 +120,51 @@ data_full <- data_long %>%
                           "PAPUA SELATAN", "PAPUA BARAT DAYA")) %>%
   arrange(Provinsi, Tahun)
 
-print("--- Data Panel Final (Siap Analisis) ---")
+print("--- Data Panel Final ---")
 glimpse(data_full)
 view(data_full)
 print(paste("Total Baris Data:", nrow(data_full)))
 write_csv(data_full, "data_long_cleaned.csv")
 ```
-Kemudian, menstandarkan dan menggabungkan seluruh file data provinsi menjadi satu dataset panel yang konsisten. Proses ini mencakup penamaan ulang variabel agar seragam, transformasi dari format wide ke long, serta penyaringan periode (2019–2024) dan wilayah yang relevan. Hasil akhirnya adalah dataset panel bersih yang siap dipakai untuk analisis deskriptif maupun regresi panel.
+
+Kemudian, dilakukan standarisasi dan penggabungan seluruh file data provinsi menjadi satu dataset panel yang konsisten. Proses ini mencakup penamaan ulang variabel agar seragam, transformasi dari format wide ke long, serta penyaringan periode (2019–2024) dan wilayah yang relevan. Hasil akhirnya adalah dataset panel bersih yang siap dipakai untuk analisis deskriptif maupun regresi panel.
+
+#### **2. 🔍 Analisis Data Eksploratif**
+
+*Statistik Deskriptif*
+
+```{r3}
+print(describeBy(df$PDRB_Growth, group = df$Provinsi))
+print(describeBy(df$PDRB_Growth, group = df$Tahun))
+```
+Pada tahap ini, statistik deskriptif dihitung untuk menggambarkan karakteristik dasar pertumbuhan PDRB, baik menurut provinsi maupun menurut tahun.
+
+*Matriks Korelasi*
+
+```{r4}
+vars_for_cor <- df %>% 
+  select(PDRB_Growth, UHH, HLS, RLS, Pengeluaran)
+cor_matrix <- cor(vars_for_cor, use = "complete.obs")
+print("Matriks Korelasi:")
+print(round(cor_matrix, 2))
+```
+
+<img src="assets/images/1.2 Matriks Korelasi.png" width="400">
+
+Pada tahap ini, hubungan antarvariabel utama dianalisis melalui matriks korelasi sehingga pola keterkaitan antarindikator dapat diidentifikasi. Hasilnya: 
+
+* PDRB_Growth: Variabel ini memiliki korelasi yang sangat lemah (hampir nol) dengan semua variabel lainnya. Nilai korelasinya berkisar antara -0.08 hingga 0.11.
+* Variabel Lain: Terdapat korelasi positif yang cukup kuat (moderat) di antara variabel RLS, UHH, dan Pengeluaran. (Pengeluaran vs UHH = 0.61, Pengeluaran vs RLS = 0.59, RLS vs UHH = 0.42, RLS VS HLS = 0.49)
+* Daya Prediksi Rendah: Korelasi yang sangat lemah antara variabel X dan Y (PDRB_Growth) menunjukkan bahwa variabel-variabel tersebut bukan prediktor linear yang baik. Model regresi linear yang dihasilkan kemungkinan besar tidak akan signifikan atau memiliki $R^2$ yang sangat rendah.
+* Potensi Multikolinearitas: Adanya korelasi yang cukup kuat di antara variabel-variabel independen (misalnya UHH dan Pengeluaran = 0.61) mengindikasikan adanya potensi masalah multikolinearitas. Ini dapat membuat koefisien regresi tidak stabil dan sulit untuk diinterpretasikan.
+
+
+
+
+
+
+
+
 
 
 ### 👥 **Tim Penyusun**
