@@ -56,11 +56,25 @@ Proyek ini menggunakan dua pendekatan utama:
 4. **Uji Asumsi Klasik**
 Melakukan pengujian asumsi dasar regresi (seperti multikolinearitas, heteroskedastisitas, autokorelasi, dan normalitas residual) untuk menjamin validitas hasil estimasi.
 
-### 🪜 Tahapan
+### 🪜 **Tahapan**
 
 ---
 
-#### 1. 🧹 Persiapan (Data Wrangling)
+#### **1. 🧹 Persiapan (Data Wrangling)**
+
+*Import Library:*
+
+```{r0}
+library(tidyverse)
+library(plm)
+library(psych)
+library(lmtest)
+library(car)
+library(RColorBrewer)
+```
+Pertama, dilakukan inisialisasi lingkungan kerja agar semua fungsi siap digunakan dengan cara memuat pustaka utama yang dibutuhkan untuk analisis statistik, regresi panel, visualisasi, serta pembersihan data atau biasa disebut tahap.
+
+*Pembersihan & Transformasi Data*
 
 ```{r1}
 file_list <- dir_ls(glob = "*_provinsi_clean.csv")
@@ -112,7 +126,7 @@ view(data_full)
 print(paste("Total Baris Data:", nrow(data_full)))
 write_csv(data_full, "data_long_cleaned.csv")
 ```
-
+Kemudian, menstandarkan dan menggabungkan seluruh file data provinsi menjadi satu dataset panel yang konsisten. Proses ini mencakup penamaan ulang variabel agar seragam, transformasi dari format wide ke long, serta penyaringan periode (2019–2024) dan wilayah yang relevan. Hasil akhirnya adalah dataset panel bersih yang siap dipakai untuk analisis deskriptif maupun regresi panel.
 
 
 ### 👥 **Tim Penyusun**
