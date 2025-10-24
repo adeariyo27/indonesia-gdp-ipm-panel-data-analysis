@@ -149,7 +149,7 @@ print("Matriks Korelasi:")
 print(round(cor_matrix, 2))
 ```
 
-<img src="assets/images/1.2 Matriks Korelasi.png" width="400">
+<img src="assets/images/1.2 Matriks Korelasi.png" width="500">
 
 Pada tahap ini, hubungan antarvariabel utama dianalisis melalui matriks korelasi sehingga pola keterkaitan antarindikator dapat diidentifikasi. Hasilnya: 
 
@@ -161,7 +161,7 @@ Pada tahap ini, hubungan antarvariabel utama dianalisis melalui matriks korelasi
 *Visualisasi Tren PDRB Top 10 Provinsi*
 
 
-```{r}
+```{r5}
 top10 <- df %>%
   group_by(Provinsi) %>%
   summarise(mean_growth = mean(PDRB_Growth, na.rm = TRUE)) %>%
@@ -194,10 +194,56 @@ ggplot(df_final, aes(x = Tahun, y = PDRB_Growth, colour = Provinsi_mod)) +
   <img src="assets/images/1.3 Visualisasi Tren PDRB Top 10 Provinsi.png" width="600" height="450">
 </p>
 
-Pada tahap ini, tren pertumbuhan PDRB divisualisasikan dengan menampilkan sepuluh provinsi teratas secara individual, sedangkan provinsi lainnya digabungkan ke dalam satu garis rata-rata untuk menjaga keterbacaan grafik.
+Pada tahap ini, tren pertumbuhan PDRB divisualisasikan dengan menampilkan 10 provinsi teratas secara individual, sedangkan provinsi lainnya digabungkan ke dalam satu garis rata-rata untuk menjaga keterbacaan grafik.
 
+#### **3. 🧩 Pemilihan Model (Uji Spesifikasi)**
 
+*Estimasi Tiga Model Panel Utama*
 
+```{r6}
+common <- plm(PDRB_Growth ~ UHH + HLS + RLS + Pengeluaran, 
+              data = df, 
+              index = c("Provinsi", "Tahun"), 
+              model = "pooling")
+
+fixed <- plm(PDRB_Growth ~ UHH + HLS + RLS + Pengeluaran, 
+             data = df, 
+             index = c("Provinsi", "Tahun"), 
+             model = "within")
+
+random <- plm(PDRB_Growth ~ UHH + HLS + RLS + Pengeluaran, 
+              data = df, 
+              index = c("Provinsi", "Tahun"), 
+              model = "random")
+```
+
+Pada tahap ini, beberapa pendekatan regresi data panel dijalankan untuk menentukan model yang paling sesuai:
+- Pooled OLS (*common*)
+Model ini diperlakukan seolah-olah data gabungan lintas-provinsi dan lintas-waktu adalah satu kesatuan tanpa membedakan efek individual.
+- Fixed Effect (*within*)
+Model ini memperhitungkan perbedaan karakteristik tetap antarprovinsi dengan menghilangkan variasi yang bersifat konstan, sehingga fokus diberikan pada variasi dalam suatu provinsi sepanjang waktu.
+- Random Effect (*random*)
+Model ini mengasumsikan bahwa variasi antarprovinsi bersifat acak dan tidak berkorelasi dengan variabel penjelas, sehingga memungkinkan adanya efek individual sekaligus efisiensi estimasi.
+
+*Uji Chow (Fixed vs Common)*
+
+```{r7}
+print("--- Uji Chow (Fixed vs Common) ---")
+print(pFtest(fixed, common)
+```
+
+<img src="assets/images/3.1 Uji Chow.png" width="500">
+
+Uji Chow ini bertugas sebagai "juri" untuk memutuskan satu hal:
+
+"Apakah harus memperlakukan semua provinsi sebagai satu kelompok yang sama, atau setiap provinsi itu unik dan harus diperlakukan berbeda?"
+
+- Model *common* (Gabungan): Menganggap semua provinsi itu sama. Data dari Aceh sampai Papua digabung jadi satu.
+- Model *fixed* (*Fixed Effect*): Menganggap setiap provinsi itu unik. Ada karakteristik khusus (misal: budaya, geografi, kebijakan lokal) yang membedakan mereka.
+
+Kesimpulan: Hasil p-value adalah 0.000003161.
+
+Nilai ini sangat kecil, jauh di bawah batas umum (0.05), berarti tolak model yang sederhana (*common*) dan menerima model yang lebih kompleks (*fixed*).
 
 
 
