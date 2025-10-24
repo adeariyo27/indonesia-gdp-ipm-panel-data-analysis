@@ -2,43 +2,123 @@
 
 ---
 
-### **Pendahuluan**
-Proyek ini bertujuan untuk menganalisis pengaruh empat komponen Indeks Pembangunan Manusia (IPM) terhadap laju pertumbuhan ekonomi di tingkat provinsi di Indonesia. Analisis ini menggunakan data series waktu dari tahun 2019 hingga 2024.
+### 📘 **Pendahuluan**
 
 ---
 
-### **Latar Belakang**
+Proyek ini bertujuan untuk menganalisis pengaruh empat komponen Indeks Pembangunan Manusia (IPM) terhadap laju pertumbuhan ekonomi di tingkat provinsi di Indonesia. Analisis ini menggunakan data series waktu dari tahun 2019 hingga 2024.
+
+### 📖 **Latar Belakang**
+
+---
 
 Dalam konteks pembangunan suatu wilayah, terdapat dua indikator utama yang sering menjadi sorotan: Produk Domestik Regional Bruto (PDRB) sebagai cerminan pertumbuhan ekonomi, dan Indeks Pembangunan Manusia (IPM) yang mengukur kemajuan dari aspek kualitas hidup. Meskipun PDRB menunjukkan seberapa besar output ekonomi suatu daerah, IPM menawarkan gambaran yang lebih holistik dengan mengukur kesehatan, pendidikan, dan standar hidup masyarakat. Keterkaitan antara keduanya menjadi esensial, di mana pertumbuhan ekonomi yang tinggi idealnya harus sejalan dengan peningkatan kualitas pembangunan manusia.
 
 Studi ini bertujuan untuk mengeksplorasi secara lebih mendalam apakah terdapat hubungan positif dan saling memengaruhi antara IPM dan PDRB, khususnya dalam konteks provinsi di Indonesia. Pertumbuhan ekonomi yang berkelanjutan tidak hanya diukur dari angka, tetapi juga dari peningkatan kualitas hidup penduduk. Oleh karena itu, analisis ini sangat relevan untuk memahami seberapa efektif IPM sebagai pendorong pertumbuhan ekonomi, serta sebaliknya.
 
-### **Tujuan Proyek**
+### 🎯 **Tujuan Proyek**
+
+---
+
 1.  Mengetahui statistik deskriptif dari empat komponen IPM dan laju pertumbuhan ekonomi (PDRB).
 2.  Menganalisis hubungan dan pengaruh antara IPM dan laju pertumbuhan ekonomi (PDRB).
 3.  Mengidentifikasi tren dan pola pengaruh antarvariabel dari tahun 2019-2024.
 
-### **Data & Variabel**
+### 📊 **Data & Variabel**
+
+---
+
 <div align="center">
   <img src="assets/images/bps.png" width="150" align="center">
 </div>
 
-##### *Variabel Prediktor (X)*
+##### 🔢 *Variabel Prediktor (X)*
 * Umur Harapan Hidup (UHH)
 * Harapan Lama Sekolah (HLS)
 * Rata-Rata Lama Sekolah (RLS)
 * Pengeluaran Per Kapita Disesuaikan
 
-##### *Variabel Target (Y)*
+##### 📈 *Variabel Target (Y)*
 * Laju Pertumbuhan Produk Domestik Regional Bruto Atas Dasar Harga Konstan (persen)
 
-### **Metodologi**
+### 🧭 **Metodologi**
+
+---
+
 Proyek ini menggunakan dua pendekatan utama:
 
-1. **Statistik Deskriptif:** Untuk memahami karakteristik dasar data.
-2. **Regresi Data Panel:** Untuk menganalisis pengaruh variabel IPM terhadap pertumbuhan ekonomi dengan mempertimbangkan data lintas-waktu dan lintas-provinsi.
+1. **Persiapan (*Data Wrangling*)**: tahap awal untuk membersihkan, merapikan, dan menyusun data lintas-waktu dan lintas-provinsi agar siap dianalisis. Termasuk penanganan missing value, konsistensi format, serta transformasi variabel bila diperlukan.
 
-### **Tim Penyusun**
+2. **Analisis Data Eksploratif**: eksplorasi awal untuk memahami pola, tren, dan distribusi variabel. Visualisasi dan statistik ringkas digunakan untuk mengidentifikasi karakteristik utama serta potensi hubungan antarvariabel.
+
+3. **Pemilihan Model (Uji Spesifikasi)**: penentuan model panel yang paling sesuai (misalnya *Fixed Effect* atau *Random Effect*) melalui uji spesifikasi. Tahap ini memastikan model yang dipilih mampu menangkap variasi antar-provinsi dan antar-waktu secara tepat.
+
+4. **Uji Asumsi Klasik**
+Melakukan pengujian asumsi dasar regresi (seperti multikolinearitas, heteroskedastisitas, autokorelasi, dan normalitas residual) untuk menjamin validitas hasil estimasi.
+
+### 🪜 Tahapan
+
+---
+
+#### 1. 🧹 Persiapan (Data Wrangling)
+
+```{r1}
+file_list <- dir_ls(glob = "*_provinsi_clean.csv")
+
+print(paste("Ditemukan", length(file_list), "file data:"))
+print(file_list)
+read_and_clean_col <- function(filepath) {
+  df <- read_csv(filepath, show_col_types = FALSE)
+  old_name <- names(df)[2]
+  tahun <- str_extract(old_name, "\\d{4}")
+  new_name <- case_when(
+    str_detect(old_name, "LajuPertumbuhan|Laju_Pertumbuhan") ~ paste0("PDRB_Growth_", tahun),
+    str_detect(old_name, "PengeluaranPerKapita") ~ paste0("Pengeluaran_", tahun),
+    str_detect(old_name, "HLS") ~ paste0("HLS_", tahun),
+    str_detect(old_name, "RLS") ~ paste0("RLS_", tahun),
+    str_detect(old_name, "UHH") ~ paste0("UHH_", tahun),
+    TRUE ~ old_name 
+  )
+  names(df)[2] <- new_name
+  return(df)
+}
+
+data_wide_cleaned <- map(file_list, read_and_clean_col) %>%
+  reduce(left_join, by = "Wilayah")
+
+print("--- Data Wide (Setelah Digabung & Kolom Distandardisasi) ---")
+glimpse(data_wide_cleaned)
+view(data_wide_cleaned)
+write_csv(data_wide_cleaned, "data_wide_cleaned.csv")
+
+data_long <- data_wide_cleaned %>%
+  pivot_longer(
+    cols = -Wilayah,
+    names_to = c(".value", "Tahun"),
+    names_sep = "_(?=\\d{4})" 
+  ) %>%
+  mutate(Tahun = as.numeric(Tahun)) 
+
+data_full <- data_long %>%
+  rename(Provinsi = Wilayah) %>%
+  filter(Tahun >= 2019 & Tahun <= 2024) %>%
+  filter(!Provinsi %in% c("PAPUA TENGAH", "PAPUA PEGUNUNGAN", 
+                          "PAPUA SELATAN", "PAPUA BARAT DAYA")) %>%
+  arrange(Provinsi, Tahun)
+
+print("--- Data Panel Final (Siap Analisis) ---")
+glimpse(data_full)
+view(data_full)
+print(paste("Total Baris Data:", nrow(data_full)))
+write_csv(data_full, "data_long_cleaned.csv")
+```
+
+
+
+### 👥 **Tim Penyusun**
+
+---
+
 * Ade Ariyo Yudanto
 * Daumi Rahmatika
 * Fitri Hayati
