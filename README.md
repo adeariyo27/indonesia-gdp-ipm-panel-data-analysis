@@ -61,7 +61,7 @@ Melakukan pengujian asumsi dasar regresi (seperti multikolinearitas, heteroskeda
 
 #### **1. 🧹 Persiapan (Data Wrangling)**
 
-*Import Library:*
+**Import Library**
 
 ```{r0}
 library(tidyverse)
@@ -74,7 +74,7 @@ library(RColorBrewer)
 
 Pertama, dilakukan inisialisasi lingkungan kerja agar semua fungsi siap digunakan dengan cara memuat pustaka utama yang dibutuhkan untuk analisis statistik, regresi panel, visualisasi, serta pembersihan data atau biasa disebut tahap.
 
-*Pembersihan & Transformasi Data*
+**Pembersihan & Transformasi Data**
 
 ```{r1}
 file_list <- dir_ls(glob = "*_provinsi_clean.csv")
@@ -131,7 +131,7 @@ Kemudian, dilakukan standarisasi dan penggabungan seluruh file data provinsi men
 
 #### **2. 🔍 Analisis Data Eksploratif**
 
-*Statistik Deskriptif*
+**Statistik Deskriptif**
 
 ```{r3}
 print(describeBy(df$PDRB_Growth, group = df$Provinsi))
@@ -139,7 +139,7 @@ print(describeBy(df$PDRB_Growth, group = df$Tahun))
 ```
 Pada tahap ini, statistik deskriptif dihitung untuk menggambarkan karakteristik dasar pertumbuhan PDRB, baik menurut provinsi maupun menurut tahun.
 
-*Matriks Korelasi*
+**Matriks Korelasi**
 
 ```{r4}
 vars_for_cor <- df %>% 
@@ -153,12 +153,12 @@ print(round(cor_matrix, 2))
 
 Pada tahap ini, hubungan antarvariabel utama dianalisis melalui matriks korelasi sehingga pola keterkaitan antarindikator dapat diidentifikasi. Hasilnya: 
 
-* PDRB_Growth: Variabel Y ini memiliki korelasi yang sangat lemah (hampir nol) dengan semua variabel lainnya. Nilai korelasinya berkisar antara -0.08 hingga 0.11.
+* PDRB_Growth: Variabel Y ini memiliki **korelasi yang sangat lemah** (hampir nol) dengan semua variabel lainnya. Nilai korelasinya berkisar antara -0.08 hingga 0.11.
 * Variabel Lain: Terdapat korelasi positif yang cukup kuat (moderat) di antara variabel X: RLS, UHH, dan Pengeluaran. (*Pengeluaran vs UHH = 0.61, Pengeluaran vs RLS = 0.59, RLS vs UHH = 0.42, RLS VS HLS = 0.49*)
-* Daya Prediksi Rendah: Korelasi yang sangat lemah antara variabel X dan Y (PDRB_Growth) menunjukkan bahwa variabel-variabel tersebut bukan prediktor linear yang baik. Model regresi linear yang dihasilkan kemungkinan besar tidak akan signifikan atau memiliki $R^2$ yang sangat rendah.
-* Potensi Multikolinearitas: Adanya korelasi yang cukup kuat di antara variabel-variabel independen (misalnya UHH dan Pengeluaran = 0.61) mengindikasikan adanya potensi masalah multikolinearitas. Ini dapat membuat koefisien regresi tidak stabil dan sulit untuk diinterpretasikan.
+* Daya Prediksi Rendah: Korelasi yang sangat lemah antara variabel X dan Y (PDRB_Growth) menunjukkan bahwa variabel-variabel tersebut **bukan prediktor linear yang baik**. Model regresi linear yang dihasilkan kemungkinan besar tidak akan signifikan atau memiliki $R^2$ yang sangat rendah.
+* Potensi Multikolinearitas: Adanya korelasi yang cukup kuat di antara variabel-variabel independen (misalnya UHH dan Pengeluaran = 0.61) mengindikasikan adanya **potensi masalah multikolinearitas**. Ini dapat membuat koefisien regresi tidak stabil dan sulit untuk diinterpretasikan.
 
-*Visualisasi Tren PDRB Top 10 Provinsi*
+**Visualisasi Tren PDRB Top 10 Provinsi**
 
 
 ```{r5}
@@ -190,15 +190,15 @@ ggplot(df_final, aes(x = Tahun, y = PDRB_Growth, colour = Provinsi_mod)) +
         legend.position = "right")
 ```
 
-<p align="center">
-  <img src="assets/images/1.3 Visualisasi Tren PDRB Top 10 Provinsi.png" width="600" height="450">
-</p>
+<div align="center">
+  <img src="assets/images/1.3 Visualisasi Tren PDRB Top 10 Provinsi.png" width="600" height="450" align="center"> 
+</div>
 
 Pada tahap ini, tren pertumbuhan PDRB divisualisasikan dengan menampilkan 10 provinsi teratas secara individual, sedangkan provinsi lainnya digabungkan ke dalam satu garis rata-rata untuk menjaga keterbacaan grafik.
 
 #### **3. 🧩 Pemilihan Model (Uji Spesifikasi)**
 
-*Estimasi Tiga Model Panel Utama*
+**Estimasi Tiga Model Panel Utama**
 
 ```{r6}
 common <- plm(PDRB_Growth ~ UHH + HLS + RLS + Pengeluaran, 
@@ -225,7 +225,7 @@ Model ini memperhitungkan perbedaan karakteristik tetap antarprovinsi dengan men
 - Random Effect (*random*)
 Model ini mengasumsikan bahwa variasi antarprovinsi bersifat acak dan tidak berkorelasi dengan variabel penjelas, sehingga memungkinkan adanya efek individual sekaligus efisiensi estimasi.
 
-*Uji Chow (Fixed vs Common)*
+**Uji Chow (Fixed vs Common)**
 
 ```{r7}
 print("--- Uji Chow (Fixed vs Common) ---")
@@ -239,13 +239,90 @@ Uji Chow ini bertugas sebagai "juri" untuk memutuskan satu hal:
 "Apakah harus memperlakukan semua provinsi sebagai satu kelompok yang sama, atau setiap provinsi itu unik dan harus diperlakukan berbeda?"
 
 - Model *common* (Gabungan): Menganggap semua provinsi itu sama. Data dari Aceh sampai Papua digabung jadi satu.
-- Model *fixed* (*Fixed Effect*): Menganggap setiap provinsi itu unik. Ada karakteristik khusus (misal: budaya, geografi, kebijakan lokal) yang membedakan mereka.
+- Model *fixed* (Pengaruh Tetap): Menganggap setiap provinsi itu unik. Ada karakteristik khusus (misal: budaya, geografi, kebijakan lokal) yang membedakan mereka.
 
-Kesimpulan: Hasil p-value adalah 0.000003161.
+Kesimpulan: hasil p-value adalah **0.000003161**.
 
-Nilai ini sangat kecil, jauh di bawah batas umum (0.05), berarti tolak model yang sederhana (*common*) dan menerima model yang lebih kompleks (*fixed*).
+Nilai ini sangat kecil, jauh di bawah taraf nyata umum (0.05), berarti **tolak model yang sederhana** (*common*) dan **menerima model yang lebih kompleks** (*fixed*).
 
+**Uji Hausman (Fixed vs Random)**
 
+```{r8}
+print("--- Uji Hausman (Fixed vs Random) ---")
+print(phtest(fixed, random))
+```
+
+<img src="assets/images/3.2 Uji Hausman.png" width="500">
+
+Setelah Uji Chow (juri pertama) menyingkirkan model *common* (gabungan), Uji Hausman adalah "juri final". Tugasnya adalah memilih satu pemenang di antara dua model yang tersisa:
+
+- Model *random* (Pengaruh Acak): Model ini berasumsi keunikan tiap provinsi itu ada, tapi sifatnya *random* (acak) dan tidak ada hubungannya dengan variabel prediktor (HLS, RLS, UHH, Pengeluaran).
+- Model *fixed* (Pengaruh Tetap): Model ini berasumsi keunikan tiap provinsi itu sangat penting dan berkaitan erat dengan variabel prediktor.
+
+Kesimpulan: hasil p-value adalah **0.000002341**.
+
+Nilai ini sangat kecil, jauh di bawah taraf nyata umum (0.05), berarti **tolak model model *random* **(yang lebih sederhana) dan **menerima model yang lebih kompleks (*fixed*)**.
+
+Kedua uji ini dengan yakin memberi tahu bahwa keunikan tiap provinsi berkorelasi atau berkaitan erat dengan variabel-variabel prediktor. Oleh karena itu, **Model *Fixed Effect* (Pengaruh Tetap)** adalah model yang tepat dipilih untuk pemodelan dalam analisis ini.
+
+#### **4. 📐 Uji Asumsi Klasik**
+
+**Uji Multikolinearitas (VIF)**
+
+```{r9}
+pooled_lm <- lm(PDRB_Growth ~ UHH + HLS + RLS + Pengeluaran, data = df)
+vif_results <- car::vif(pooled_lm)
+print("--- Uji Multikolinearitas (VIF) ---")
+print(vif_results)
+```
+
+<img src="assets/images/4.1 Uji Multikolinearitas.png" width="450">
+
+Kesimpulan: Semua nilai VIF jauh di bawah 5. Ini berarti **tidak ada masalah Multikolinearitas**. Variabel-variabel prediktor (UHH, HLS, dll.) tidak tumpang tindih secara berlebihan.
+
+**Uji Heteroskedastisitas (Breusch-Pagan)**
+
+```{r10}
+print("--- Uji Heteroskedastisitas (Breusch-Pagan) ---")
+print(lmtest::bptest(fixed))
+```
+
+<img src="assets/images/4.2 Uji Heteroskedastisitas.png" width="500">
+
+Kesimpulan: p-value yang sangat kecil berarti tes ini positif menemukan 'kejanggalan'. Model terbukti **mengalami Heteroskedastisitas**, sehingga asumsi ini dilanggar.
+
+**Uji Autokorelasi (Breusch-Godfrey/Wooldridge)**
+
+```{r11}
+print("--- Uji Autokorelasi (Wooldridge) ---")
+print(pbgtest(fixed))
+```
+
+<img src="assets/images/4.3 Uji Autokorelasi.png" width="680">
+
+Kesimpulan: p-value yang sangat kecil berarti tes ini positif menemukan 'kejanggalan'. Model terbukti **mengalami Autokorelasi**, sehingga asumsi ini dilanggar.
+
+**Uji Normalitas Residual**
+
+```{r12}
+print("--- Uji Normalitas (Shapiro-Wilk) ---")
+print(shapiro.test(residuals(fixed)))
+```
+
+<img src="assets/images/4.4 Uji Normalitas.png" width="450">
+
+Kesimpulan: p-value yang kecil berarti "Gagal". Tes ini menemukan bahwa **sisaan model tidak terdistribusi normal**, sehingga asumsi normalitas dilanggar.
+
+**Uji Cross-sectional Dependence**
+
+```{r13}
+print("--- Uji Cross-sectional Dependence (Pesaran CD) ---")
+print(pcdtest(fixed, test = "cd"))
+```
+
+<img src="assets/images/4.5 Uji Cross-sectional Dependence.png" width="630">
+
+Kesimpulan: p-value yang kecil berarti tes ini positif menemukan 'kejanggalan'. Dengan kata lain, pertumbuhan ekonomi suatu provinsi **tidak sepenuhnya independen dari provinsi lain**, ada keterkaitan atau pengaruh lintas wilayah.
 
 
 ### 👥 **Tim Penyusun**
