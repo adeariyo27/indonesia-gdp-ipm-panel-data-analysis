@@ -52,8 +52,17 @@ Proyek ini menggunakan dua pendekatan utama:
 
 3. **Pemilihan Model (Uji Spesifikasi)**: penentuan model panel yang paling sesuai (misalnya *Fixed Effect* atau *Random Effect*) melalui uji spesifikasi. Tahap ini memastikan model yang dipilih mampu menangkap variasi antar-provinsi dan antar-waktu secara tepat.
 
-4. **Uji Asumsi Klasik**
-Melakukan pengujian asumsi dasar regresi (seperti multikolinearitas, heteroskedastisitas, autokorelasi, dan normalitas residual) untuk menjamin validitas hasil estimasi.
+4. **Uji Asumsi Klasik**: pengujian asumsi dasar regresi (seperti multikolinearitas, heteroskedastisitas, autokorelasi, dan normalitas residual) untuk menjamin validitas hasil estimasi.
+
+5. **Visualisasi Tren Ternormalisasi (Z-Score)**: pembuatan plot garis ternormalisasi (Z-Score) untuk membandingkan pola pergerakan semua variabel dalam satu grafik secara visual.
+
+6. **Interpretasi Model**: summary model untuk menarik kesimpulan yang berfokus pada:
+
+- *Adjusted R-squared**: seberapa kuat model menjelaskan daya beli.
+
+- **F-statistic p-value**: apakah model signifikan secara simultan.
+
+- **Coefficients (Estimate & p-value)**: variabel X mana yang signifikan secara parsial dan bagaimana arah pengaruhnya (positif/negatif).
 
 ### 🪜 **Tahapan**
 
@@ -127,7 +136,7 @@ print(paste("Total Baris Data:", nrow(data_full)))
 write_csv(data_full, "data_long_cleaned.csv")
 ```
 
-Kemudian, dilakukan standarisasi dan penggabungan seluruh file data provinsi menjadi satu dataset panel yang konsisten. Proses ini mencakup penamaan ulang variabel agar seragam, transformasi dari format wide ke long, serta penyaringan periode (2019–2024) dan wilayah yang relevan. Hasil akhirnya adalah dataset panel bersih yang siap dipakai untuk analisis deskriptif maupun regresi panel.
+Kemudian, dilakukan **standarisasi** dan **penggabungan** seluruh file data provinsi menjadi satu dataset panel yang konsisten. Proses ini mencakup **penamaan ulang variabel agar seragam**, transformasi dari **format wide ke long**, serta penyaringan periode (2019–2024) dan wilayah yang relevan. Hasil akhirnya adalah dataset panel bersih yang siap dipakai untuk analisis deskriptif maupun regresi panel.
 
 #### **2. 🔍 Analisis Data Eksploratif**
 
@@ -155,8 +164,8 @@ Pada tahap ini, hubungan antarvariabel utama dianalisis melalui matriks korelasi
 
 * PDRB_Growth: Variabel Y ini memiliki **korelasi yang sangat lemah** (hampir nol) dengan semua variabel lainnya. Nilai korelasinya berkisar antara -0.08 hingga 0.11.
 * Variabel Lain: Terdapat korelasi positif yang cukup kuat (moderat) di antara variabel X: RLS, UHH, dan Pengeluaran. (*Pengeluaran vs UHH = 0.61, Pengeluaran vs RLS = 0.59, RLS vs UHH = 0.42, RLS VS HLS = 0.49*)
-* Daya Prediksi Rendah: Korelasi yang sangat lemah antara variabel X dan Y (PDRB_Growth) menunjukkan bahwa variabel-variabel tersebut **bukan prediktor linear yang baik**. Model regresi linear yang dihasilkan kemungkinan besar tidak akan signifikan atau memiliki $R^2$ yang sangat rendah.
-* Potensi Multikolinearitas: Adanya korelasi yang cukup kuat di antara variabel-variabel independen (misalnya UHH dan Pengeluaran = 0.61) mengindikasikan adanya **potensi masalah multikolinearitas**. Ini dapat membuat koefisien regresi tidak stabil dan sulit untuk diinterpretasikan.
+* Daya Prediksi Rendah: Korelasi yang sangat lemah antara variabel X dan Y (PDRB_Growth) menunjukkan bahwa variabel-variabel tersebut **bukan prediktor linear yang baik**. Model regresi linear yang dihasilkan kemungkinan besar **tidak akan signifikan** atau memiliki **$R^2$ yang sangat rendah**.
+* Potensi Multikolinearitas: Adanya korelasi yang cukup kuat di antara variabel-variabel independen (misalnya UHH dan Pengeluaran = 0.61) mengindikasikan adanya **potensi masalah multikolinearitas**. Ini dapat membuat koefisien regresi **tidak stabil** dan **sulit untuk diinterpretasikan**.
 
 **Visualisasi Tren PDRB Top 10 Provinsi**
 
@@ -234,12 +243,12 @@ print(pFtest(fixed, common)
 
 <img src="assets/images/3.1 Uji Chow.png" width="500">
 
-Uji Chow ini bertugas sebagai "juri" untuk memutuskan satu hal:
+Uji Chow ini bertugas sebagai **juri** untuk memutuskan satu hal:
 
 "Apakah harus memperlakukan semua provinsi sebagai satu kelompok yang sama, atau setiap provinsi itu unik dan harus diperlakukan berbeda?"
 
-- Model *common* (Gabungan): Menganggap semua provinsi itu sama. Data dari Aceh sampai Papua digabung jadi satu.
-- Model *fixed* (Pengaruh Tetap): Menganggap setiap provinsi itu unik. Ada karakteristik khusus (misal: budaya, geografi, kebijakan lokal) yang membedakan mereka.
+- Model *common* (Gabungan): Menganggap semua provinsi itu **sama**. Data dari Aceh sampai Papua digabung jadi satu.
+- Model *fixed* (Pengaruh Tetap): Menganggap setiap provinsi itu **unik**. Ada karakteristik khusus (misal: budaya, geografi, kebijakan lokal) yang membedakan mereka.
 
 Kesimpulan: hasil p-value adalah **0.000003161**.
 
@@ -254,10 +263,10 @@ print(phtest(fixed, random))
 
 <img src="assets/images/3.2 Uji Hausman.png" width="500">
 
-Setelah Uji Chow (juri pertama) menyingkirkan model *common* (gabungan), Uji Hausman adalah "juri final". Tugasnya adalah memilih satu pemenang di antara dua model yang tersisa:
+Setelah Uji Chow (juri pertama) menyingkirkan model *common* (gabungan), Uji Hausman adalah **juri final**. Tugasnya adalah memilih satu pemenang di antara dua model yang tersisa:
 
-- Model *random* (Pengaruh Acak): Model ini berasumsi keunikan tiap provinsi itu ada, tapi sifatnya *random* (acak) dan tidak ada hubungannya dengan variabel prediktor (HLS, RLS, UHH, Pengeluaran).
-- Model *fixed* (Pengaruh Tetap): Model ini berasumsi keunikan tiap provinsi itu sangat penting dan berkaitan erat dengan variabel prediktor.
+- Model *random* (Pengaruh Acak): Model ini berasumsi **keunikan tiap provinsi itu ada**, tapi sifatnya *random* (acak) dan tidak ada hubungannya dengan variabel prediktor (HLS, RLS, UHH, Pengeluaran).
+- Model *fixed* (Pengaruh Tetap): Model ini berasumsi **keunikan tiap provinsi itu sangat penting** dan berkaitan erat dengan variabel prediktor.
 
 Kesimpulan: hasil p-value adalah **0.000002341**.
 
@@ -323,6 +332,102 @@ print(pcdtest(fixed, test = "cd"))
 <img src="assets/images/4.5 Uji Cross-sectional Dependence.png" width="630">
 
 Kesimpulan: p-value yang kecil berarti tes ini positif menemukan 'kejanggalan'. Dengan kata lain, pertumbuhan ekonomi suatu provinsi **tidak sepenuhnya independen dari provinsi lain**, ada keterkaitan atau pengaruh lintas wilayah.
+
+
+#### **5. 📈 Visualisasi Tren Ternormalisasi (Z-Score)**
+
+```{r14}
+vars_to_plot <- c("PDRB_Growth", "HLS", "RLS", "UHH", "Pengeluaran")
+
+data_avg_trend <- df %>%
+  group_by(Tahun) %>%
+  summarise(across(all_of(vars_to_plot), ~ mean(.x, na.rm = TRUE))) %>%
+  ungroup() %>%
+  mutate(across(all_of(vars_to_plot), ~ as.numeric(scale(.x)))) %>%
+  pivot_longer(
+    cols = all_of(vars_to_plot),
+    names_to = "Variabel",
+    values_to = "Z_Score"
+  )
+
+plot_tren <- ggplot(data_avg_trend, aes(x = Tahun, y = Z_Score, color = Variabel, group = Variabel)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2) +
+  labs(
+    title = "Tren Rata-Rata Nasional (Ternormalisasi)",
+    subtitle = "Variabel IPM vs Pertumbuhan PDRB (2019-2024)",
+    x = "Tahun",
+    y = "Z-Score (Standar Deviasi dari Rata-rata)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+print(plot_tren + 
+        scale_x_continuous(breaks = seq(2015, 2024, by = 1)))
+```
+
+<img src="assets/images/5. Z-Score Normalisasi.png" width="650">
+
+Plot ini dibuat untuk membandingkan **pola pergerakan beberapa variabel** dari tahun 2019 hingga 2024 dengan menggunakan **normalisasi Z-Score** karena variabel prediktor memiliki satuan yang sangat berbeda (misalnya Pengeluaran dalam ribu/jutaan Rupiah, UHH, RLS, dan HLS dalam tahun, serta PDRB_Growth dalam persentase). Nilai pada sumbu Y ditampilkan sebagai **standar deviasi** sebuah nilai berada dari **rata-ratanya**, sehingga perbedaan tren antarvariabel dapat diamati secara sebanding. 
+
+Empat variabel komponen IPM (HLS, RLS, UHH, dan Pengeluaran) terlihat **bergerak secara serempak** dan menunjukkan tren kenaikan yang **konsisten serta stabil** selama periode pengamatan. Di sisi lain, pola yang **sangat berbeda dan tidak stabil (volatil)** ditunjukkan oleh variabel PDRB_Growth. Penurunan yang **sangat tajam** dialami oleh PDRB_Growth pada tahun 2020, yang kemudian diikuti oleh **pemulihan**, namun trennya **cenderung mendatar (stagnan**) dari 2022 hingga 2024, berlawanan dengan variabel IPM lainnya yang terus meningkat.
+
+Plot ini secara visual menjelaskan **semua masalah** yang ditemukan dalam Uji Asumsi klasik sebelumnya:
+
+- Model regresi linear mencari **pola yang konsisten**. Di sini, polanya **jelas tidak konsisten**.
+
+- **Menjelaskan Kegagalan Uji Asumsi** Normalitas, Heteroskedastisitas, dan Autokorelasi.
+
+- Guncangan besar (*shock*) di tahun 2020 adalah outlier ekstrem yang membuat **sisaan (residual)** model  menjadi **tidak normal** (melanggar Uji Shapiro-Wilk).
+
+- Perbedaan volatilitas (liar di 2020, tenang di 2023) menyebabkan **varians error** yang **tidak konstan** (melanggar Uji Heteroskedastisitas).
+
+- Efek *rebound* (pemulihan) di 2021 yang terjadi karena anjlok di 2020 adalah bentuk dari **Autokorelasi** (error tahun ini terkait dengan tahun lalu).
+
+Singkatnya, ini adalah visualisasi "baik" karena berhasil menangkap akar masalah analisis, yaitu PDRB_Growth dipengaruhi oleh guncangan jangka pendek (pandemi) yang polanya sangat berbeda dari tren jangka panjang variabel IPM.
+
+
+#### **6. 💡 Interpretasi Model**
+
+```{r15}
+summary(fixed)
+```
+
+<img src="assets/images/6. Interpretasi Model.png" width="450">
+
+**1. Uji Kelayakan Model (F-statistic)**
+
+  - Temuan: p-value: **0.00001221 (sangat kecil)**.
+  
+  - Artinya: Secara bersama-sama, keempat variabel Anda (UHH, HLS, RLS, Pengeluaran) memang **memiliki pengaruh yang signifikan** terhadap PDRB_Growth. 
+
+**2. Uji Kekuatan Model (R-Squared)**
+  
+  - Temuan: R-Squared: 0.15461 (15.5%) dan Adj. R-Squared: -0.033823 (negatif).
+
+  - Artinya: Ini **buruk**. R-Squared sebesar **0.15461** berarti model hanya mampu menjelaskan **15.5%** dari variasi PDRB_Growth. Ini sangat rendah. Adj. R-Squared yang **negatif** adalah penanda kuat bahwa model sangat lemah. Ini menunjukkan bahwa setelah memperhitungkan jumlah variabel, model ini pada dasarnya tidak memiliki daya jelas sama sekali. Hal ini juga sudah terlihat pada ploT normalisasi Z-Score sebelumnya.
+
+**3. Uji Pengaruh per Variabel (Coefficients)**
+
+  - Temuan: Kolom Pr(>|t|) atau p-value: 
+    
+    - UHH (Usia Harapan Hidup): p-value =* **0.01427**, nilai ini kecil (di bawah 0.05).
+
+    - Variabel Lain (HLS, RLS, Pengeluaran): p-value-nya besar (**0.94, 0.19, 0.11**).
+
+  - Artinya: Hanya UHH yang **terbukti berpengaruh signifikan** (dan positif) terhadap PDRB_Growth. Tiga variabel lainnya (HLS, RLS, dan Pengeluaran) **tidak terbukti memiliki pengaruh yang nyata** secara statistik.
+
+**Kesimpulan Akhir**
+
+Meskipun sudah dipilih model yang paling tepat secara metode (*Fixed Effect*), hasil dari model tersebut menunjukkan bahwa:
+
+- Daya jelas model **sangat lemah** (R-Squared sangat kecil).
+
+- Dari 4 variabel komponen IPM, **hanya UHH (Usia Harapan Hidup)** yang berpengaruh **signifikan** terhadap Pertumbuhan PDRB.
+
+Ini sangat konsisten dengan temuan di awal (matriks korelasi dan plot tren) yang menunjukkan bahwa variabel-variabel IPM memang punya hubungan yang lemah dengan PDRB_Growth.
+
+
 
 
 ### 👥 **Tim Penyusun**
