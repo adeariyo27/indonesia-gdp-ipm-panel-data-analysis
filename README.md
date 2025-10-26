@@ -397,13 +397,13 @@ summary(fixed)
 
 **1. Uji Kelayakan Model (F-statistic)**
 
-  - Temuan: p-value: **0.00001221 (sangat kecil)**.
+  - Temuan: p-value = **0.00001221 (sangat kecil)**.
   
   - Artinya: Secara bersama-sama, keempat variabel Anda (UHH, HLS, RLS, Pengeluaran) memang **memiliki pengaruh yang signifikan** terhadap PDRB_Growth. 
 
 **2. Uji Kekuatan Model (R-Squared)**
   
-  - Temuan: R-Squared: 0.15461 (15.5%) dan Adj. R-Squared: -0.033823 (negatif).
+  - Temuan: R-Squared = **0.15461 (15.5%)** dan Adj. R-Squared = **-0.033823 (negatif)**.
 
   - Artinya: Ini **buruk**. R-Squared sebesar **0.15461** berarti model hanya mampu menjelaskan **15.5%** dari variasi PDRB_Growth. Ini sangat rendah. Adj. R-Squared yang **negatif** adalah penanda kuat bahwa model sangat lemah. Ini menunjukkan bahwa setelah memperhitungkan jumlah variabel, model ini pada dasarnya tidak memiliki daya jelas sama sekali. Hal ini juga sudah terlihat pada ploT normalisasi Z-Score sebelumnya.
 
@@ -411,7 +411,7 @@ summary(fixed)
 
   - Temuan: Kolom Pr(>|t|) atau p-value: 
     
-    - UHH (Usia Harapan Hidup): p-value =* **0.01427**, nilai ini kecil (di bawah 0.05).
+    - UHH (Usia Harapan Hidup): p-value = **0.01427 (di bawah 0.05)**.
 
     - Variabel Lain (HLS, RLS, Pengeluaran): p-value-nya besar (**0.94, 0.19, 0.11**).
 
