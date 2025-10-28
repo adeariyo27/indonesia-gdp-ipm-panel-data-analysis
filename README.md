@@ -13,7 +13,7 @@ Proyek ini bertujuan untuk menganalisis pengaruh empat komponen Indeks Pembangun
 
 Dalam konteks pembangunan suatu wilayah, terdapat dua indikator utama yang sering menjadi sorotan: Produk Domestik Regional Bruto (PDRB) sebagai cerminan pertumbuhan ekonomi, dan Indeks Pembangunan Manusia (IPM) yang mengukur kemajuan dari aspek kualitas hidup. Secara teoritis, keduanya memiliki hubungan dua arah dalam jangka panjang: PDRB yang tinggi membiayai kesehatan dan pendidikan (IPM), dan IPM yang tinggi (tenaga kerja terdidik dan sehat) akan mendorong PDRB.
 
-Proyek ini bertujuan untuk mengeksplorasi secara lebih mendalam apakah terdapat hubungan positif dan saling memengaruhi antara IPM dan PDRB, khususnya dalam konteks provinsi di Indonesia selama periode 2019-2024. Proyek ini juga mencoba menjawab itu secara kuantitatif dengan mengukur efektivitas komponen IPM dalam mendorong laju PDRB, terutama setelah "dihantam" oleh pandemi 2019. Dengan menganalisis data pada periode, kami mencoba membedah apakah fondasi IPM terbukti signifikan melindungi laju PDRB, atau apakah hubungan keduanya secara riil tidak nyata.
+Proyek ini bertujuan untuk mengeksplorasi secara lebih mendalam apakah terdapat hubungan positif dan saling memengaruhi antara IPM dan PDRB, khususnya dalam konteks provinsi di Indonesia selama periode 2019-2024. Proyek ini juga mencoba menjawab hal tersebut secara kuantitatif dengan mengukur efektivitas komponen IPM dalam mendorong laju PDRB, terutama setelah "dihantam" oleh pandemi 2019. Dengan menganalisis data pada periode tersebut, kami mencoba membedah apakah fondasi IPM terbukti signifikan melindungi laju PDRB, atau apakah hubungan keduanya secara riil tidak nyata.
 
 ### 🎯 **Tujuan Proyek**
 
