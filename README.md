@@ -168,7 +168,7 @@ Pada tahap ini, hubungan antarvariabel utama dianalisis melalui matriks korelasi
 * Potensi Multikolinearitas: Adanya korelasi yang cukup kuat di antara variabel-variabel independen (misalnya UHH dan Pengeluaran = 0.61) mengindikasikan adanya **potensi masalah multikolinearitas**. Ini dapat membuat koefisien regresi **tidak stabil** dan **sulit untuk diinterpretasikan**.
 
 **Visualisasi Tren PDRB Top 10 Provinsi**
-
+jghgjhgjgjgjhg
 
 ```{r5}
 top10 <- df %>%
